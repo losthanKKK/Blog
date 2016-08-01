@@ -1,10 +1,11 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
-date:   2016-04-24 22:52:36 +0800
-categories: jekyll update
+title:  "Welcome to weex!"
+date:   2016-08-1 22:52:36 +0800
+
 ---
 	 A framework for building Mobile cross-platform UI
+
 你可以在这找到[weex docs][weex-docs]的官方文档
 
 首先安装'node.js'
