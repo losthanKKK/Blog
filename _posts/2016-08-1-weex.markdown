@@ -1,24 +1,114 @@
 ---
 layout: post
-title:  "Welcome to weex!"
-date:   2016-08-1 22:56:36 +0800
+title:  "Welcome to Jekyll!"
+date:   2016-04-24 22:52:36 +0800
+categories: jekyll update
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+	 A framework for building Mobile cross-platform UI
+你可以在这找到[weex docs][weex-docs]的官方文档
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+首先安装'node.js'
+然后npm install -g weex-toolkit
 
-    Jekyll also offers powerful support for code snippets:
+如何最快速上手：
 
+weex 提供的 [playground][playground] 就是你应该去的地方
+
+一个最简单的 weex demo 长这个样子：
+{% highlight javascript %}
+<template>
+  <container>
+    <text>Hello World</text>
+  </container>
+</template>
+{% endhighlight %}
+下面是计算器的demo 
+	
+	web端手机端均可运行
 {% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
+<template>
+  <container style="background-color: #202020; padding-bottom:5;">
+    <text class="result" id="result">{{bindResult()}}</text>
+    <container style="flex-direction: row">
+      <text class="number" onclick="handler" id="1">1</text>
+      <text class="number" onclick="handler" id="2">2</text>
+      <text class="number" onclick="handler">3</text>
+      <text class="operator" onclick="handler">+</text>
+    </container>
+    <container style="flex-direction: row">
+      <text class="number" onclick="handler">4</text>
+      <text class="number" onclick="handler">5</text>
+      <text class="number" onclick="handler">6</text>
+      <text class="operator" onclick="handler">-</text>
+    </container>
+    <container style="flex-direction: row">
+      <text class="number" onclick="handler">7</text>
+      <text class="number" onclick="handler">8</text>
+      <text class="number" onclick="handler">9</text>
+      <text class="operator" onclick="handler">*</text>
+    </container>
+    <container style="flex-direction: row">
+      <text class="number" onclick="handler">0</text>
+      <text class="number" onclick="handler">.</text>
+      <text class="number" onclick="clear">AC</text>
+      <text class="operator" onclick="calculate">=</text>
+    </container>
+  </container>
+</template>
+
+<style>
+  .number {
+    background-color: #D5D6D8;
+    flex: 1;
+    text-align: center;
+    height: 100;
+    padding: 30;
+    margin: 5;
+  }
+  .operator {
+    background-color: #F78D2A;
+    flex: 1;
+    text-align: center;
+    height: 100;
+    padding: 30;
+    margin: 5;
+  }
+  .result {
+    color: #ffffff;
+    background-color: #202020;
+    text-align: right;
+    height: 100;
+    padding: 30;
+    margin: 5;
+  }
+</style>
+
+<script>
+  module.exports = {
+    data: {
+      result: ''
+    },
+    methods: {
+      bindResult: function () {
+        return this.result;
+      },
+      handler: function (e) {
+        var value = e.target.attr["value"];
+        this.result = this.result + value;
+      },
+      calculate: function(e) {
+        var result = eval(this.result);
+        this.result = this.result + " = " + result;
+      },
+      clear: function(e) {
+        this.result = "";
+      }
+    }
+  }
+</script>
 {% endhighlight %}
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+Check out the [weex docs][weex-docs] for more info on how to get the most out of weex.
 
-[jekyll-docs]: http://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+[weex-docs]: http://http://alibaba.github.io/weex/index.html
+[playground]: http://：http://weex.alibaba-inc.com/playground
