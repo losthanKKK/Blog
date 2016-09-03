@@ -112,5 +112,5 @@ weex 提供的 [playground][playground] 就是你应该去的地方
 
 Check out the [weex docs][weex-docs] for more info on how to get the most out of weex.
 
-[weex-docs]: http:alibaba.github.io/weex/index.html
-[playground]: http:weex.alibaba-inc.com/playground
+[weex-docs]: http://alibaba.github.io/weex/index.html
+[playground]: http://weex.alibaba-inc.com/playground
