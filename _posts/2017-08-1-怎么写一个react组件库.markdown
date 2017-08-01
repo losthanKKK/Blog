@@ -64,6 +64,7 @@ git repository:
 keywords:
 license: (ISC)
 About to write to /Users/alanbsmith/personal-projects/trash/package.json:
+{% highlight json %}
 
 {
   "name": "component-lib",
@@ -76,6 +77,7 @@ About to write to /Users/alanbsmith/personal-projects/trash/package.json:
   "author": "Alan Smith <[alan.smith@example.com](mailto:a.bax.smith@gmail.com)> ([https://github.com/alanbsmith](https://github.com/alanbsmith))",
   "license": "ISC"
 }
+{% endhighlight %}
 
 Is this ok? (yes)
 我通常使用0.1.0取代默认的1.0.0作为初始版本。同时我会添加模块的简略介绍。我们需要修改入口文件为build/index.js(稍后我们会具体解释)。请注意你的作者和GitHub信息会被自动添加。这将帮助你把npm文档和GIthub关联，使得你的用户对你的模块有更多的了解。

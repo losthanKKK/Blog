@@ -24,10 +24,10 @@ weex 提供的 [playground][playground] 就是你应该去的地方
   </container>
 </template>
 {% endhighlight %}
-下面是计算器的demo 
-	
+下面是计算器的demo
+
 	web端手机端均可运行
-{% highlight ruby %}
+{% highlight javascript %}
 <template>
   <container style="background-color: #202020; padding-bottom:5;">
     <text class="result" id="result">{{bindResult()}}</text>
