@@ -1,0 +1,439 @@
+怎么写一个React组件库（一）
+
+原文链接：https://hackernoon.com/building-a-react-component-library-part-1-d8a1e248fe6c
+引言
+
+该系列文章将通过创建一个组件库来引导你学习如何构建自己的组件库。
+
+这是该系列的第一部分。该部分将主要关注配置我们的模块和文件结构，但我们最后将会创建一个示例组件！ 🎉
+
+如果你想要看第二部分，点击这里！
+
+前提
+
+我不需要你之前在 npm 发布过模块，但我们需要有以下一些前提：
+
+安装了 Node & npm
+
+基本掌握 Node & npm
+
+安装了 Git
+
+基本掌握使用 Git & Github
+
+熟练使用 JavaScript & ES6
+
+基本掌握 CSS
+
+基本掌握 React
+
+熟悉 styled-components 和 Babel 将很有帮助，但不是必须的。
+
+开始
+
+配置git和npm
+
+首先我们创建一个文件夹。我将我的组件命名为component-lib。
+
+$ mkdir component-lib
+现在我们配置 Git 和 GitHub。
+
+$ cd component-lib
+$ git init
+⚠️注意： 你需要先在 GitHub 上添加一个 repo。
+
+git remote add origin git@github.com:alanbsmith/component-lib.git
+棒！现在我们将开始配置 npm。如果你在 npm 上已经有一个账号，你只需要运行npm login.
+
+如果没有账号，我们需要为你创建一个账号。我们需要配置作者的名字，email（公开的）和 url。
+
+$ npm set init.author.name "Your Name"
+$ npm set init.author.email "you@example.com"
+$ npm set init.author.url "http://yourblog.com"
+
+$ npm adduser
+现在我们可以运行npm init 和配置我们的项目。大多数默认配置都可以直接使用，其中你需要特别关注version,description和entry point。 同时记住你可以稍后对其进行全部更新。
+
+$ npm init
+name: (component-lib)
+version: (1.0.0) 0.1.0
+description: an example component library built with React!
+entry point: (index.js) build/index.js
+test command:
+git repository:
+keywords:
+license: (ISC)
+About to write to /Users/alanbsmith/personal-projects/trash/package.json:
+
+{
+  "name": "component-lib",
+  "version": "0.1.0",
+  "description": "an example component library built with React!",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alan Smith <[alan.smith@example.com](mailto:a.bax.smith@gmail.com)> ([https://github.com/alanbsmith](https://github.com/alanbsmith))",
+  "license": "ISC"
+}
+
+Is this ok? (yes)
+我通常使用0.1.0取代默认的1.0.0作为初始版本。同时我会添加模块的简略介绍。我们需要修改入口文件为build/index.js(稍后我们会具体解释)。请注意你的作者和GitHub信息会被自动添加。这将帮助你把npm文档和GIthub关联，使得你的用户对你的模块有更多的了解。
+
+真棒！现在我们将添加文件和目录。
+
+添加文件和目录
+
+这一部分很乏味，所以我将简单介绍大部分点，关注其中一些重点。
+
+$ mkdir lib
+$ touch .babelrc .eslintrc .gitignore .npmignore CODE_OF_CONDUCT.md README.md
+$ touch lib/index.js
+$ mkdir lib/components lib/elements lib/styles
+很好，现在你已经已经构建了基本的文件架构。其中：
+
+.babelrc包含编译阶段一些有用的转转码规则(presets)
+
+.eslintrc包含linter配置
+
+.gitignore和.npmignore分别用于忽略来自 git 和 npm 的文件
+
+CODE_OF_CONDUCT.md对开源项目非常重要，怎么强调都不为过。但不要轻易的添加。如果你有添加 COC，你需要愿意执行它。
+
+README.md也非常重要。这是我们和开源社区交流的主要方式。
+
+/lib将是存放我们的组件和样式的地方。
+
+关于测试？
+
+我保证我们会进行测试，但在该部分不会进行测试配置。
+
+添加我们初始的依赖
+
+这部分同样很枯燥。我将说明最重要的部分然后跳过其他部分。我将使用$ npm install，但你也可以使用yarn。
+
+🚨 后缀部分--save-dev十分重要！_ 🚨
+
+我们不需要用户在使用安装我们组件的时候连带这些模块， 这些库 将只用于我们本地开发。
+
+$ npm install babel-cli babel-core babel-eslint babel-preset-es2015 babel-preset-react eslint eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react eslint-watch polished prop-types react react-dom styled-components --save-dev
+然后等待…
+
+哇！安装了好多。我们关注其中一些重点。如果你熟悉React，那么像react，react-dom，babel(以及presets)和prop-types这些对你来说相当熟悉。另外如果你熟悉eslint，这些插件也应该不陌生。
+
+可能你对styled-components 和polished比较陌生。正如我们之前提到的，我们将使用styled-components来构建我们的库。你可以将 Polished当作一个提供很好的Sass功能的附加模块。这在技术上 不是必须的，但我认为在这介绍它很酷。
+
+很棒！现在我们有了如上的配置，接下来我们填写之前创建的文件。
+
+⚠️快速注意事项：
+
+下面我将使用术语“transpile”(此处我们翻译成“转码”)。这个单词是转换(transform)和编译(compile)的混搭。如果这对于你很陌生，你可以认为它和编译(compile)类似，不用过多关注细节。如果你想知道更详细的，你可以阅读这篇文章 这里.
+
+初始文件配置
+
+.babelrc
+
+{
+  "presets": ["es2015", "react"]
+}
+.eslintrc
+
+对于linters，我们有很多的选项。 如果你想要是用自己的也是可以的；如果你不想，这里有很棒的一个。
+
+{
+  root: true,
+  parser: 'babel-eslint',
+  plugins: [/*'import', */'jsx-a11y', 'react'],
+
+env: {
+    browser: true,
+    commonjs: true,
+    es6: true,
+    jest: true,
+    node: true
+  },
+
+parserOptions: {
+    ecmaVersion: 6,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+      generators: true,
+      experimentalObjectRestSpread: true
+    }
+  },
+
+settings: {
+    'import/ignore': [
+      'node_modules',
+      '\\.(json|css|jpg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm)/article>,
+    ],
+    'import/extensions': ['.js'],
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.json']
+      }
+    }
+  },
+
+rules: {
+    // [http://eslint.org/docs/rules/](http://eslint.org/docs/rules/)
+    'array-callback-return': 'warn',
+    'camelcase': 'warn',
+    'curly': 'warn',
+    'default-case': ['warn', { commentPattern: '^no default/article> }],
+    'dot-location': ['warn', 'property'],
+    'eol-last': 'warn',
+    'eqeqeq': ['warn', 'always'],
+    'indent': ['warn', 2, { "SwitchCase": 1 }],
+    'guard-for-in': 'warn',
+    'keyword-spacing': 'warn',
+    'new-parens': 'warn',
+    'no-array-constructor': 'warn',
+    'no-caller': 'warn',
+    'no-cond-assign': ['warn', 'always'],
+    'no-const-assign': 'warn',
+    'no-control-regex': 'warn',
+    'no-delete-var': 'warn',
+    'no-dupe-args': 'warn',
+    'no-dupe-class-members': 'warn',
+    'no-dupe-keys': 'warn',
+    'no-duplicate-case': 'warn',
+    'no-empty-character-class': 'warn',
+    'no-empty-pattern': 'warn',
+    'no-eval': 'warn',
+    'no-ex-assign': 'warn',
+    'no-extend-native': 'warn',
+    'no-extra-bind': 'warn',
+    'no-extra-label': 'warn',
+    'no-fallthrough': 'warn',
+    'no-func-assign': 'warn',
+    'no-global-assign': 'warn',
+    'no-implied-eval': 'warn',
+    'no-invalid-regexp': 'warn',
+    'no-iterator': 'warn',
+    'no-label-var': 'warn',
+    'no-labels': ['warn', { allowLoop: false, allowSwitch: false }],
+    'no-lone-blocks': 'warn',
+    'no-loop-func': 'warn',
+    'no-mixed-operators': ['warn', {
+      groups: [
+        ['&', '|', '^', '~', '<<', '>>', '>>>'],
+        ['==', '!=', '===', '!==', '>', '>=', '<', '<='],
+        ['&&', '||'],
+        ['in', 'instanceof']
+      ],
+      allowSamePrecedence: false
+    }],
+    'no-multi-str': 'warn',
+    'no-new-func': 'warn',
+    'no-new-object': 'warn',
+    'no-new-symbol': 'warn',
+    'no-new-wrappers': 'warn',
+    'no-obj-calls': 'warn',
+    'no-octal': 'warn',
+    'no-octal-escape': 'warn',
+    'no-redeclare': 'warn',
+    'no-regex-spaces': 'warn',
+    'no-restricted-syntax': [
+      'warn',
+      'LabeledStatement',
+      'WithStatement',
+    ],
+    'no-script-url': 'warn',
+    'no-self-assign': 'warn',
+    'no-self-compare': 'warn',
+    'no-sequences': 'warn',
+    'no-shadow-restricted-names': 'warn',
+    'no-sparse-arrays': 'warn',
+    'no-template-curly-in-string': 'warn',
+    'no-this-before-super': 'warn',
+    'no-throw-literal': 'warn',
+    'no-undef': 'warn',
+    'no-unexpected-multiline': 'warn',
+    'no-unreachable': 'warn',
+    'no-unsafe-negation': 'warn',
+    'no-unused-expressions': 'warn',
+    'no-unused-labels': 'warn',
+    'no-unused-vars': ['warn', { vars: 'local', args: 'none' }],
+    'no-use-before-define': ['warn', 'nofunc'],
+    'no-useless-computed-key': 'warn',
+    'no-useless-concat': 'warn',
+    'no-useless-constructor': 'warn',
+    'no-useless-escape': 'warn',
+    'no-useless-rename': ['warn', {
+      ignoreDestructuring: false,
+      ignoreImport: false,
+      ignoreExport: false,
+    }],
+    'no-with': 'warn',
+    'no-whitespace-before-property': 'warn',
+    'object-curly-spacing': ['warn', 'always'],
+    'operator-assignment': ['warn', 'always'],
+    radix: 'warn',
+    'require-yield': 'warn',
+    'rest-spread-spacing': ['warn', 'never'],
+    'semi': 'warn',
+    strict: ['warn', 'never'],
+    'unicode-bom': ['warn', 'never'],
+    'use-isnan': 'warn',
+    'valid-typeof': 'warn',
+
+'react/jsx-boolean-value': 'warn',
+    'react/jsx-closing-bracket-location': 'warn',
+    'react/jsx-curly-spacing': 'warn',
+    'react/jsx-equals-spacing': ['warn', 'never'],
+    'react/jsx-first-prop-new-line': ['warn', 'multiline'],
+    'react/jsx-handler-names': 'warn',
+    'react/jsx-indent': ['warn', 2],
+    'react/jsx-indent-props': ['warn', 2],
+    'react/jsx-key': 'warn',
+    'react/jsx-max-props-per-line': 'warn',
+    'react/jsx-no-bind': ['warn', {'allowArrowFunctions': true}],
+    'react/jsx-no-comment-textnodes': 'warn',
+    'react/jsx-no-duplicate-props': ['warn', { ignoreCase: true }],
+    'react/jsx-no-undef': 'warn',
+    'react/jsx-pascal-case': ['warn', {
+      allowAllCaps: true,
+      ignore: [],
+    }],
+    'react/jsx-sort-props': 'warn',
+    'react/jsx-tag-spacing': 'warn',
+    'react/jsx-uses-react': 'warn',
+    'react/jsx-uses-vars': 'warn',
+    'react/jsx-wrap-multilines': 'warn',
+    'react/no-deprecated': 'warn',
+    'react/no-did-mount-set-state': 'warn',
+    'react/no-did-update-set-state': 'warn',
+    'react/no-direct-mutation-state': 'warn',
+    'react/no-is-mounted': 'warn',
+    'react/no-unused-prop-types': 'warn',
+    'react/prefer-es6-class': 'warn',
+    'react/prefer-stateless-function': 'warn',
+    'react/prop-types': 'warn',
+    'react/react-in-jsx-scope': 'warn',
+    'react/require-render-return': 'warn',
+    'react/self-closing-comp': 'warn',
+    'react/sort-comp': 'warn',
+    'react/sort-prop-types': 'warn',
+    'react/style-prop-object': 'warn',
+    'react/void-dom-elements-no-children': 'warn',
+
+// [https://github.com/evcohen/eslint-plugin-jsx-a11y/tree/master/docs/rules](https://github.com/evcohen/eslint-plugin-jsx-a11y/tree/master/docs/rules)
+    'jsx-a11y/aria-role': 'warn',
+    'jsx-a11y/img-has-alt': 'warn',
+    'jsx-a11y/img-redundant-alt': 'warn',
+    'jsx-a11y/no-access-key': 'warn'
+  }
+}
+.gitignore
+
+在这里我们将忽略build目录。Babel会将转码(transpile)后的代码放在该目录下，如果没什么必要的话我们不需要push up(或者pull down)该部分代码。
+
+.DS_Store
+build
+node_modules
+*.log
+.npmignore
+
+在这里我们将忽略lib目录。我们的用户将只和在build目录中的转码(transpile)后的代码接触，因此我们不需要(或者不想要)使得他们的node_modules由于不必要的代码而变得臃肿。
+
+.babelrc
+lib
+CODE_OF_CONDUCT.md
+CODE_OF_CONDUCT.md
+
+你可能已经有了一份心仪的COC。如果这样，那么自如地使用它。如果没有，这份 Contributor Covenant Code of Conduct 可以使用。
+
+README.md
+
+你可以随意地在 README 里添加内容。下面是一些建议的内容:
+
+项目的标题
+
+简略的介绍
+
+如何在本地运行项目
+
+运行 linter
+
+运行测试套件
+
+如何贡献
+
+提交 PR 的步骤
+
+如何提 issues
+
+代码规范的链接
+
+一份更新日志
+
+很棒。现在所有都配置完成，我们可以添加内容到package.json。
+
+添加初始化的 npm Scripts
+
+在package.json里我们将添加如下命令到scripts部分：
+
+"scripts": {
+  "build": "babel lib -d build",
+  "lint": "eslint lib/**; exit 0",
+  "lint:watch": "esw -w lib/**",
+  "prepublish": "npm run build"
+},
+build将告诉Babel对lib目录下的内容如何进行转码然后导出到build目录。 还记得我们先前如何设置入口build/index.js？那将是lib/index.js的转码(transpile)版本。
+
+lint将对lib目录递归地运行linter去确保代码风格的正确。
+
+lint:watch是一个用来在任何时候lib发生变化时更新linter。它将帮助我们即时发现错误。
+
+prepublish是一个很棒的脚本。npm会在我们运行npm publish之前执行这个脚本。 这将确保我们在build的资源是最新的版本。我们稍后会添加一个lint和测试脚本，这将确保我们不会向npm发布错误的代码。
+
+很棒。现在我们已经完成基本的配置了，我们将添加我们的第一个组件！
+
+添加我们的第一个组件
+
+好的，你已经做到了很多。现在是时候做一些更意思的事了。我们将在lib/elements目录下创建一个名为Button.js的文件。
+
+$ touch lib/elements/Button.js
+接下来，在文件内部添加如下内容：
+
+import styled from 'styled-components';
+
+const Button =styled.button`
+  background: #1FB6FF;
+  border: none;
+  border-radius: 2px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  line-height: 40px;
+  font-weight: 200;
+  margin: 8px 0;
+  outline: none;
+  padding: 0 12px;
+  text-transform: uppercase;
+  transition: all 300ms ease;
+  &:hover {
+    background: #009EEB;
+  }
+`;
+
+export default Button;
+我们完成了这些之后，我们需要把它添加到lib/index.js以便我们的模块可以知道如何找到它。
+
+import Button from './elements/Button';
+
+module.exports = {
+  Button,
+};
+收尾
+
+耶✌️！我们的小按钮组件即将被发布。但在我们发布到npm之前，在本地测试环境测试我们的组件是很有必要的。 在第二部分，这正将是我们讨论的部分！同时我们将讨论组件设计然后将其转化成styled-components使得其变得更加可定制。
+
+⚠️注意： 我们最好保存我们的项目然后commit。
+
+$ git status
+$ git add -A
+$ git commit -m 'Initial commit | adds basic setup'
