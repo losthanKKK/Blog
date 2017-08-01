@@ -134,6 +134,7 @@ $ npm install babel-cli babel-core babel-eslint babel-preset-es2015 babel-preset
 初始文件配置
 
 .babelrc
+{% highlight json %}
 
 {
   "presets": ["es2015", "react"]
@@ -328,6 +329,7 @@ rules: {
     'jsx-a11y/no-access-key': 'warn'
   }
 }
+{% endhighlight %}
 .gitignore
 
 在这里我们将忽略build目录。Babel会将转码(transpile)后的代码放在该目录下，如果没什么必要的话我们不需要push up(或者pull down)该部分代码。
