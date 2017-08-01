@@ -139,9 +139,12 @@ $ npm install babel-cli babel-core babel-eslint babel-preset-es2015 babel-preset
 {
   "presets": ["es2015", "react"]
 }
+{% endhighlight %}
+
 .eslintrc
 
 对于linters，我们有很多的选项。 如果你想要是用自己的也是可以的；如果你不想，这里有很棒的一个。
+{% highlight json %}
 
 {
   root: true,
