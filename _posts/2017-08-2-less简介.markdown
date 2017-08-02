@@ -31,7 +31,7 @@ Less 的一个主要功能就是可以让你像在其它高级语言中一样声
 这里，我们声明了两个变量，一个是背景颜色，一个是文本颜色，它们都是十六进制的值。
 
 Less 代码如下：
-{% highlight json %}
+{% highlight css %}
 
 @background-color: #ffffff;
 @text-color: #1A237E;
